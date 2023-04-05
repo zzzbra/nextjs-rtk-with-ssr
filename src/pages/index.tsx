@@ -1,22 +1,42 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-
-import Counter from '../features/counter/Counter'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useGetShopDataQuery } from "../services/shop";
 
 const IndexPage: NextPage = () => {
+  const { data, error, isLoading } = useGetShopDataQuery();
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
+
+  // TODO: replace with global modal experience
+  if (error) {
+    return <h1>Error: {JSON.stringify(error)}</h1>;
+  }
+
   return (
-    <div
-      // className={styles.container}
-    >
+    <div>
       <Head>
         <title>Fast Growing Trees</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-      
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+
+      <ol>
+        {data?.products?.map((p) => {
+          // use global view port logic to determine ideal image dimensions to use here
+
+          const [firstImage] = p.images;
+          return (
+            <li key={p.id}>
+              <img src={firstImage.src} />
+              <h3>{p.title}</h3>
+            </li>
+          );
+        })}
+      </ol>
+
+      {/* TODO: delete commented out code */}
       {/* <header className={styles.header}>
         <img src="/logo.svg" className={styles.logo} alt="logo" />
         <Counter />
@@ -63,7 +83,7 @@ const IndexPage: NextPage = () => {
         </span>
       </header> */}
     </div>
-  )
-}
+  );
+};
 
-export default IndexPage
+export default IndexPage;
