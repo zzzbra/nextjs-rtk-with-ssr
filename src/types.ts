@@ -11,7 +11,7 @@ type ProductImage = {
   variant_ids: number[];
 };
 
-type ProductData = {
+export type ProductData = {
   id: number;
   title: string;
   body: string;
