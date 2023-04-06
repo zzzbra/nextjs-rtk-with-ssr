@@ -8,12 +8,14 @@ import { ProductData, ProductState } from "../types";
 import { currencyFormatter } from "../utils/currency";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { AppState } from "../store";
-import { useGetShopDataQuery } from "../services/shop";
-import { hideCart } from "../features/cart/cartSlice";
+import { useGetShopDataQuery } from "../store/shopApiSlice";
+import { hideCart } from "../store/cartSlice";
 
 type Props = {};
 
 const FREE_SHIPPING_THRESHOLD = 150;
+const PLANTING_KIT_ID = 1532751872052;
+const PRUNER_ID = 4813305610302;
 
 const Cart: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
@@ -21,8 +23,6 @@ const Cart: React.FC<Props> = () => {
   const { items: cart, isVisible } = useAppSelector(
     (state: AppState) => state.cart,
   );
-
-  console.log({ cart });
 
   if (isLoading) {
     return null;
@@ -32,6 +32,7 @@ const Cart: React.FC<Props> = () => {
     return <>Error</>;
   }
 
+  // TODO: Offload more of these determinations to redux store
   const itemsInCart: ProductState[] = (data?.products ?? []).reduce(
     (products: ProductState[], curr: ProductData) => {
       if (Object.keys(cart).includes(curr.id.toString())) {
@@ -44,14 +45,31 @@ const Cart: React.FC<Props> = () => {
     },
     [],
   );
+  type NumberTuple = [number, number, number, number, number];
+  const [subtotal, totalTrees, totalKits, totalPruners, totalItems] =
+    itemsInCart.reduce<NumberTuple>(
+      (
+        [sum, treeCount, kitCount, prunerCount, numberCount]: NumberTuple,
+        curr: ProductState,
+      ) => {
+        return [
+          (curr.quantity ?? 1) * curr.price + sum,
+          (treeCount += curr.product_type === "Tree" ? 1 : 0),
+          (kitCount += curr.id === PLANTING_KIT_ID ? 1 : 0),
+          (prunerCount += curr.id === PRUNER_ID ? 1 : 0),
+          numberCount + 1,
+        ];
+      },
+      [0, 0, 0, 0, 0],
+    );
 
-  const subtotal = itemsInCart.reduce((sum: number, curr: ProductState) => {
-    return (curr.quantity ?? 1) * curr.price + sum;
-  }, 0);
-
-  const unselectedRecommendations = data?.recommendations.filter(
-    ({ id }: ProductData) => !Object.keys(cart).includes(id.toString()),
+  const planterRec = data?.recommendations.find(
+    ({ id }) => id === PLANTING_KIT_ID,
   );
+  const prunerRec = data?.recommendations.find(({ id }) => id === PRUNER_ID);
+  const recommendations: ProductState[] = [];
+  if (totalTrees > totalKits && planterRec) recommendations.push(planterRec);
+  if (!totalPruners && prunerRec) recommendations.push(prunerRec);
 
   return (
     <>
@@ -64,7 +82,7 @@ const Cart: React.FC<Props> = () => {
         leave="transition-opacity duration-150"
         leaveFrom="opacity-80"
         leaveTo="opacity-0"
-      ></Transition>
+      />
       <aside
         className={`p-5 fixed bg-white top-0 h-screen max-w-[440px] transition-all duration-500 ${
           isVisible ? "right-0" : "-right-[440px]"
@@ -119,11 +137,11 @@ const Cart: React.FC<Props> = () => {
           </div>
         </section>
         <hr className="rounded h-1 border-gray bg-gray my-5" />
-        {unselectedRecommendations.length > 0 && (
+        {recommendations?.length > 0 && (
           <section>
             <h3 className="text-2xl">Recommended Items</h3>
             <ul>
-              {unselectedRecommendations.map((product) => (
+              {recommendations?.map((product) => (
                 <CartItem product={product} key={product.id} isRecommendation />
               ))}
             </ul>
