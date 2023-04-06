@@ -11,6 +11,7 @@ export const shopApi = createApi({
   }),
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === HYDRATE) {
+      console.log("HYDRATING!");
       return action.payload[reducerPath];
     }
   },

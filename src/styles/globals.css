@@ -4,7 +4,7 @@
 
 @layer components {
   .content-container {
-    @apply w-full flex px-15 max-w-5xl m-auto;
+    @apply w-full flex px-15 max-w-5xl mx-auto;
   }
 }
 

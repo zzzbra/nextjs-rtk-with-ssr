@@ -2,20 +2,13 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useGetShopDataQuery } from "../services/shop";
 import ProductCard from "../components/ProductCard";
+import Loader from "../components/Loader";
 
 const IndexPage: NextPage = () => {
   const { data, error, isLoading } = useGetShopDataQuery();
 
-  // TODO: replace with global loader
-  if (isLoading) {
-    return (
-      <div className="content-container w-full h-full flex justify-center flex-col items-center">
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
+  if (isLoading) return <Loader />;
 
-  // TODO: replace with global modal experience
   if (error) {
     return <h1>Error: {JSON.stringify(error)}</h1>;
   }

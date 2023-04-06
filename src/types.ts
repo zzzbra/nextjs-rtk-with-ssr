@@ -1,4 +1,5 @@
-type ProductType = "Hard Good";
+// API
+type ProductType = string; // would ordinarily elaborate these, e.g, "Hard Good" | "etc";
 type ProductImage = {
   id: number;
   product_id: number;
@@ -28,4 +29,10 @@ type RecomendationData = ProductData;
 export type ShopApiData = {
   products: ProductData[];
   recommendations: RecomendationData[];
+};
+
+// State
+
+export type ProductState = ProductData & {
+  quantity?: number;
 };

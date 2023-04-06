@@ -11,18 +11,23 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    colors: {
-      darkGreen: "#155343",
-      turqoise: "#149EB0",
-      green: "#2B9A40",
-      lightGreen: "#BAE154",
-      paleGreen: "#D0E0B5",
-      white: "#FFFFFF",
-      black: "#000000",
-    },
     extend: {
       spacing: {
         15: "3.75rem",
+      },
+      colors: {
+        darkGreen: "#155343",
+        turqoise: "#149EB0",
+        green: "#2B9A40",
+        lightGreen: "#BAE154",
+        paleGreen: "#D0E0B5",
+        white: "#FFFFFF",
+        black: "#000000",
+        red: {
+          500: "#CD0100",
+          700: "#CD0100",
+        },
+        gray: "#D9D9D9",
       },
     },
   },
