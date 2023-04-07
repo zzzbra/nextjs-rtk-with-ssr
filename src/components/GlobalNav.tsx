@@ -1,14 +1,21 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Cart from "./Cart";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { AppState } from "../store";
-import { showCart } from "../features/cart/cartSlice";
+import { showCart } from "../store/cartSlice";
+
+import { ItemsInCart } from "../types";
+// import { useGetCartDataQuery } from "../store/cartApiSlice";
 
 const GlobalNav: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector((state: AppState) => state.cart);
-  const totalItems = Object.values(items ?? {}).reduce(
+  // const { data: items, isLoading, error } = useGetCartDataQuery();
+  const items = useAppSelector((state: AppState) => state?.cart?.items) as {
+    [id: string]: number;
+  };
+  const totalItems = Object.values((items as ItemsInCart) ?? {}).reduce<number>(
     (sum: number, i: number) => sum + i,
     0,
   );
@@ -17,14 +24,14 @@ const GlobalNav: React.FC = () => {
     <>
       <nav className="flex pt-9">
         <div className="content-container justify-between">
-          <a href="/">
+          <Link href="/">
             <Image
               src="/logo_multi_color.svg"
               alt="Fast Growing Trees Logo"
               height={38}
               width={30}
             />
-          </a>
+          </Link>
           <ul>
             <button className="relative" onClick={() => dispatch(showCart())}>
               <Image

@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { AppState } from "../store";
 import { useGetShopDataQuery } from "../store/shopApiSlice";
 import { hideCart } from "../store/cartSlice";
+// import { useGetCartDataQuery } from "../store/cartApiSlice";
 
 type Props = {};
 
@@ -20,19 +21,28 @@ const PRUNER_ID = 4813305610302;
 const Cart: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
   const { data, isLoading, error } = useGetShopDataQuery();
-  const { items: cart, isVisible } = useAppSelector(
-    (state: AppState) => state.cart,
+  // const {
+  //   data: cart,
+  //   isLoading: isCartLoading,
+  //   error: cartError,
+  // } = useGetCartDataQuery();
+
+  const { items: cart = {}, isVisible = false } = useAppSelector(
+    (state: AppState) => state?.cart,
   );
 
+  // if (isLoading || isCartLoading) {
   if (isLoading) {
     return null;
   }
 
+  // if (error || cartError || !cart) {
   if (error) {
     return <>Error</>;
   }
 
-  // TODO: Offload more of these determinations to redux store
+  // TODO: Offload these determinations to redux store, update these counts via
+  // each action
   const itemsInCart: ProductState[] = (data?.products ?? []).reduce(
     (products: ProductState[], curr: ProductData) => {
       if (Object.keys(cart).includes(curr.id.toString())) {
@@ -54,9 +64,9 @@ const Cart: React.FC<Props> = () => {
       ) => {
         return [
           (curr.quantity ?? 1) * curr.price + sum,
-          (treeCount += curr.product_type === "Tree" ? 1 : 0),
-          (kitCount += curr.id === PLANTING_KIT_ID ? 1 : 0),
-          (prunerCount += curr.id === PRUNER_ID ? 1 : 0),
+          (treeCount += curr.product_type === "Tree" ? cart[curr.id] : 0),
+          (kitCount += curr.id === PLANTING_KIT_ID ? cart[curr.id] : 0),
+          (prunerCount += curr.id === PRUNER_ID ? cart[curr.id] : 0),
           numberCount + 1,
         ];
       },

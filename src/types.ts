@@ -36,3 +36,7 @@ export type ShopApiData = {
 export type ProductState = ProductData & {
   quantity?: number;
 };
+
+export type ItemsInCart = {
+  [id: ProductData["id"]]: number;
+};

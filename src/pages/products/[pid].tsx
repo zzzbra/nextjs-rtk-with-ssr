@@ -1,8 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-import { addItem } from "../../features/cart/cartSlice";
-import { useGetShopDataQuery } from "../../services/shop";
+import { addItem } from "../../store/cartSlice";
+import { useGetShopDataQuery } from "../../store/shopApiSlice";
 import Loader from "../../components/Loader";
 import { useAppDispatch } from "../../hooks";
 

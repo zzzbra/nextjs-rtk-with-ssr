@@ -1,10 +1,11 @@
 import React from "react";
+import Link from "next/link";
 import { ProductData } from "../types";
 import ThumbnailImage from "./ThumbnailImage";
 
 const ProductCard: React.FC<{ product: ProductData }> = ({ product }) => {
   return (
-    <a href={`/products/${product.id}`} className="group/product-link">
+    <Link href={`/products/${product.id}`} className="group/product-link">
       <div className="rounded-md bg-white shadow-md overflow-hidden">
         <div className="overflow-hidden">
           <ThumbnailImage product={product} />
@@ -13,7 +14,7 @@ const ProductCard: React.FC<{ product: ProductData }> = ({ product }) => {
           <h3 className="leading-none">{product.title}</h3>
         </section>
       </div>
-    </a>
+    </Link>
   );
 };
 

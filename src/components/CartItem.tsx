@@ -4,7 +4,7 @@ import ThumbnailImage from "./ThumbnailImage";
 import { currencyFormatter } from "../utils/currency";
 import { ProductState } from "../types";
 import { useAppDispatch } from "../hooks";
-import { addItem, removeAll, removeItem } from "../features/cart/cartSlice";
+import { addItem, removeAll, removeItem } from "../store/cartSlice";
 
 const CartItem: React.FC<{
   product: ProductState;

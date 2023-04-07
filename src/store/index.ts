@@ -1,21 +1,28 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  combineReducers,
+} from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query/react";
+import { createWrapper } from "next-redux-wrapper";
 
-import { shopApi } from "../services/shop";
+import { shopApi } from "./shopApiSlice";
+// import { cartApi } from "./cartApiSlice";
+import cartReducer from "./cartSlice";
 
-// TODO: SSR Hydration
-// import { createWrapper } from "next-redux-wrapper";
-
-import cartReducer from "../features/cart/cartSlice";
+const combinedReducer = combineReducers({
+  [shopApi.reducerPath]: shopApi.reducer,
+  cart: cartReducer,
+  // [cartApi.reducerPath]: cartApi.reducer,
+});
 
 const makeStore = () =>
   configureStore({
-    reducer: {
-      [shopApi.reducerPath]: shopApi.reducer,
-      cart: cartReducer,
-    },
+    reducer: combinedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(shopApi.middleware),
+    devTools: process.env.NODE_ENV !== "production",
   });
 
 export const store = makeStore();
@@ -31,7 +38,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-// TODO: SSR Hydration
-// export const wrapper = createWrapper(makeStore, { debug: true });
+export const wrapper = createWrapper(makeStore, { debug: true });
 
 setupListeners(store.dispatch);
