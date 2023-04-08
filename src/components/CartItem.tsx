@@ -11,10 +11,6 @@ const CartItem: React.FC<{
   isRecommendation?: boolean;
 }> = ({ product, isRecommendation = false }) => {
   const dispatch = useAppDispatch();
-
-  // TODO: hook into cart start and ID how Many of these items are there
-  // get increment, decrement, and delete all dispatchers
-
   return (
     <div className="flex p-5 justify-between">
       <div className="flex">

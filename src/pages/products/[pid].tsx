@@ -2,33 +2,30 @@ import React from "react";
 import { useRouter } from "next/router";
 
 import { addItem } from "../../store/cartSlice";
-import { useGetShopDataQuery } from "../../store/shopApiSlice";
-import Loader from "../../components/Loader";
 import { useAppDispatch } from "../../hooks";
+import { ProductData } from "../../types";
+import { wrapper } from "../../store";
+import { getProductData } from "../../store/shopApiSlice";
 
-const ProductPage = () => {
+type Props = {
+  data: ProductData;
+  error: any;
+};
+
+const ProductPage: React.FC<Props> = ({ data: product, error }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { pid } = router.query;
-
-  // FIXME: Overfetching for now, build out SSR funct after store slices have been defined
-  const { data, isLoading, error } = useGetShopDataQuery();
-
-  if (isLoading) return <Loader />;
 
   if (error) {
     return <h1>Error: {JSON.stringify(error)}</h1>;
   }
 
-  const product = data?.products.find(
-    ({ id }) => id === parseInt(pid as string),
-  );
-
   if (product === undefined) {
     return <h1>Error: 404</h1>;
   }
 
-  const [firstImage] = product.images;
+  const [firstImage] = product?.images ?? [{}];
   return (
     <div className="content-container pt-8 grid grid-cols-12 gap-4 self-start">
       {/* TODO: use global window dimensions detection to pick best size OR 
@@ -56,3 +53,21 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    let { pid } = context.params ?? {};
+
+    if (!pid || Array.isArray(pid)) {
+      pid = "";
+    }
+
+    const { data } = await store.dispatch(getProductData.initiate(pid));
+
+    return {
+      props: {
+        data,
+      },
+    };
+  },
+);

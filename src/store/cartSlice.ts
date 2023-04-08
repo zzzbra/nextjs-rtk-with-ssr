@@ -50,7 +50,6 @@ export const cartSlice = createSlice({
   },
   extraReducers: {
     [HYDRATE]: (state, action) => {
-      console.log("cartSlice is HYDRATING:", { state }, { action });
       return {
         ...state,
         ...action.payload,

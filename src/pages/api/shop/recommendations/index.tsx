@@ -1,5 +1,5 @@
 import type { NextApiHandler } from "next";
-import data from "../../../../mock/shopData.json";
+import data from "../../../../../mock/shopData.json";
 
 const recommendationsApiHandler: NextApiHandler = async (request, response) => {
   // simulate IO latency

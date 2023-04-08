@@ -7,11 +7,10 @@ import { AppState } from "../store";
 import { showCart } from "../store/cartSlice";
 
 import { ItemsInCart } from "../types";
-// import { useGetCartDataQuery } from "../store/cartApiSlice";
+import dynamic from "next/dynamic";
 
 const GlobalNav: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const { data: items, isLoading, error } = useGetCartDataQuery();
   const items = useAppSelector((state: AppState) => state?.cart?.items) as {
     [id: string]: number;
   };
@@ -54,4 +53,4 @@ const GlobalNav: React.FC = () => {
   );
 };
 
-export default GlobalNav;
+export default dynamic(() => Promise.resolve(GlobalNav), { ssr: false });

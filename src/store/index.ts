@@ -8,22 +8,43 @@ import { setupListeners } from "@reduxjs/toolkit/query/react";
 import { createWrapper } from "next-redux-wrapper";
 
 import { shopApi } from "./shopApiSlice";
-// import { cartApi } from "./cartApiSlice";
 import cartReducer from "./cartSlice";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "../utils/localStorage";
+import { isServer } from "../utils/environment";
 
 const combinedReducer = combineReducers({
+  // Example of API-based global state management + fetching
   [shopApi.reducerPath]: shopApi.reducer,
+  // Example pure client-side global state management, "derived state"
   cart: cartReducer,
-  // [cartApi.reducerPath]: cartApi.reducer,
 });
 
-const makeStore = () =>
-  configureStore({
+const makeStore = () => {
+  const configuredStore = configureStore({
     reducer: combinedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(shopApi.middleware),
+    // use loadFromLocalStorage to overwrite any values
+    // that we already have saved
+    preloadedState: loadFromLocalStorage(),
     devTools: process.env.NODE_ENV !== "production",
   });
+
+  // listen for store changes and use saveToLocalStorage to
+  // save them to localStorage
+  if (!isServer()) {
+    configuredStore.subscribe(() => {
+      saveToLocalStorage(configuredStore.getState());
+    });
+  }
+
+  setupListeners(configuredStore.dispatch);
+
+  return configuredStore;
+};
 
 export const store = makeStore();
 

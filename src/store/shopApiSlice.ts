@@ -1,21 +1,19 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-// import { HYDRATE } from "next-redux-wrapper";
 import type { ShopApiData, ProductData } from "../types";
+import { HYDRATE } from "next-redux-wrapper";
 
 // Define a service using a base URL and expected endpoints
 export const shopApi = createApi({
   reducerPath: "shopApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/shop",
+    baseUrl: "http://localhost:3000/api/shop",
   }),
-  // We don't really care about hydration wrt API Data for the present
-  // extractRehydrationInfo(action, { reducerPath }) {
-  //   if (action.type === HYDRATE) {
-  //     console.log("HYDRATING!");
-  //     return action.payload[reducerPath];
-  //   }
-  // },
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   endpoints: (builder) => ({
     getShopData: builder.query<ShopApiData, void>({
       query: () => ({ url: "/" }),
@@ -24,7 +22,9 @@ export const shopApi = createApi({
       query: () => ({ url: "/products" }),
     }),
     getProductData: builder.query<ProductData, string>({
-      query: (pid: string) => ({ url: `/products/${pid}` }),
+      query: (pid: string) => {
+        return { url: `/products/${pid}` };
+      },
     }),
     getRecommendationsData: builder.query<ProductData, void>({
       query: () => ({ url: "/recomendations" }),
@@ -34,4 +34,9 @@ export const shopApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetShopDataQuery, useGetProductDataQuery } = shopApi;
+export const {
+  useGetShopDataQuery,
+  useGetProductDataQuery,
+  util: { getRunningQueryThunk },
+  endpoints: { getShopData, getProductData },
+} = shopApi;

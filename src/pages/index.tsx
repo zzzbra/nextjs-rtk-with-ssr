@@ -1,15 +1,14 @@
-import type { NextPage } from "next";
 import Head from "next/head";
-import { useGetShopDataQuery } from "../store/shopApiSlice";
+import { getShopData } from "../store/shopApiSlice";
 import ProductCard from "../components/ProductCard";
-import Loader from "../components/Loader";
 import { wrapper } from "../store";
+import { ShopApiData } from "../types";
 
-const IndexPage: NextPage = () => {
-  const { data, error, isLoading } = useGetShopDataQuery();
-
-  if (isLoading) return <Loader />;
-
+type Props = {
+  data: ShopApiData;
+  error: any;
+};
+const IndexPage: React.FC<Props> = ({ data, error }) => {
   if (error) {
     return <h1>Error: {JSON.stringify(error)}</h1>;
   }
@@ -29,16 +28,22 @@ const IndexPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ params, ...rest }) => {
-      // await store.dispatch(setAuthState(false));
-      console.log("State on server", store.getState());
-      console.log("other stuff on the store:", rest);
-      return {
-        props: {},
-      };
-    },
-);
-
 export default IndexPage;
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    let { pid } = context.params ?? {};
+
+    if (!pid || Array.isArray(pid)) {
+      pid = "";
+    }
+
+    const { data } = await store.dispatch(getShopData.initiate(pid));
+
+    return {
+      props: {
+        data,
+      },
+    };
+  },
+);

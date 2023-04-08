@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { AppState } from "../store";
 import { useGetShopDataQuery } from "../store/shopApiSlice";
 import { hideCart } from "../store/cartSlice";
-// import { useGetCartDataQuery } from "../store/cartApiSlice";
+import dynamic from "next/dynamic";
 
 type Props = {};
 
@@ -21,22 +21,15 @@ const PRUNER_ID = 4813305610302;
 const Cart: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
   const { data, isLoading, error } = useGetShopDataQuery();
-  // const {
-  //   data: cart,
-  //   isLoading: isCartLoading,
-  //   error: cartError,
-  // } = useGetCartDataQuery();
 
   const { items: cart = {}, isVisible = false } = useAppSelector(
     (state: AppState) => state?.cart,
   );
 
-  // if (isLoading || isCartLoading) {
   if (isLoading) {
     return null;
   }
 
-  // if (error || cartError || !cart) {
   if (error) {
     return <>Error</>;
   }
@@ -55,11 +48,12 @@ const Cart: React.FC<Props> = () => {
     },
     [],
   );
-  type NumberTuple = [number, number, number, number, number];
-  const [subtotal, totalTrees, totalKits, totalPruners, totalItems] =
+
+  type NumberTuple = [number, number, number, number];
+  const [subtotal, totalTrees, totalKits, totalPruners] =
     itemsInCart.reduce<NumberTuple>(
       (
-        [sum, treeCount, kitCount, prunerCount, numberCount]: NumberTuple,
+        [sum, treeCount, kitCount, prunerCount]: NumberTuple,
         curr: ProductState,
       ) => {
         return [
@@ -67,10 +61,9 @@ const Cart: React.FC<Props> = () => {
           (treeCount += curr.product_type === "Tree" ? cart[curr.id] : 0),
           (kitCount += curr.id === PLANTING_KIT_ID ? cart[curr.id] : 0),
           (prunerCount += curr.id === PRUNER_ID ? cart[curr.id] : 0),
-          numberCount + 1,
         ];
       },
-      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0],
     );
 
   const planterRec = data?.recommendations.find(
@@ -162,4 +155,4 @@ const Cart: React.FC<Props> = () => {
   );
 };
 
-export default Cart;
+export default dynamic(() => Promise.resolve(Cart), { ssr: false });
