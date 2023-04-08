@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 import { addItem } from "../../store/cartSlice";
 import { useAppDispatch } from "../../hooks";
@@ -27,15 +28,17 @@ const ProductPage: React.FC<Props> = ({ data: product, error }) => {
 
   const [firstImage] = product?.images ?? [{}];
   return (
-    <div className="content-container pt-8 grid grid-cols-12 gap-4 self-start">
+    <div className="content-container flex-col pt-8 md:grid md:grid-cols-12 gap-4 self-start">
       {/* TODO: use global window dimensions detection to pick best size OR 
       handle via server side props */}
       {/* Future implementation detail: timed carousel through 
       size-appropriate images */}
-      <img
+      <Image
         src={firstImage.src}
         alt={`Image of ${product.title}`}
         className="col-span-7 rounded"
+        width={firstImage.width}
+        height={firstImage.height}
       />
       <div className="bg-white col-span-5 rounded self-start p-4">
         <h2 className="text-4xl mb-4">{product.title}</h2>

@@ -1,10 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import ThumbnailImage from "./ThumbnailImage";
-import { currencyFormatter } from "../utils/currency";
-import { ProductState } from "../types";
-import { useAppDispatch } from "../hooks";
-import { addItem, removeAll, removeItem } from "../store/cartSlice";
+import ThumbnailImage from "../../ThumbnailImage";
+import { formatUsd } from "../../../utils/currency";
+import { ProductState } from "../../../types";
+import { useAppDispatch } from "../../../hooks";
+import { addItem, removeAll, removeItem } from "../../../store/cartSlice";
 
 const CartItem: React.FC<{
   product: ProductState;
@@ -31,9 +31,7 @@ const CartItem: React.FC<{
           {!isRecommendation && (
             <>
               <div className="text-sm">
-                {currencyFormatter.format(
-                  (product.quantity ?? 1) * product.price,
-                )}
+                {formatUsd((product.quantity ?? 1) * product.price)}
               </div>
               <div className="flex">
                 <button onClick={() => dispatch(removeItem(product.id))}>

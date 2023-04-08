@@ -8,6 +8,7 @@ import { showCart } from "../store/cartSlice";
 
 import { ItemsInCart } from "../types";
 import dynamic from "next/dynamic";
+import Loader from "./Loader";
 
 const GlobalNav: React.FC = () => {
   const dispatch = useAppDispatch();

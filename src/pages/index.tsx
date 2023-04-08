@@ -19,7 +19,7 @@ const IndexPage: React.FC<Props> = ({ data, error }) => {
         <title>Fast Growing Trees</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ol className="mt-5 content-container grid grid-cols-3 gap-[30px]">
+      <ol className="mt-5 content-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-[30px]">
         {data?.products?.map((product) => {
           return <ProductCard product={product} key={product.id} />;
         })}
@@ -38,7 +38,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       pid = "";
     }
 
-    const { data } = await store.dispatch(getShopData.initiate(pid));
+    const { data } = await store.dispatch(getShopData.initiate());
 
     return {
       props: {

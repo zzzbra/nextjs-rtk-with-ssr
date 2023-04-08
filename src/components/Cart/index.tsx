@@ -2,14 +2,14 @@ import React from "react";
 import Image from "next/image";
 import { Transition } from "@headlessui/react";
 
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "../ProgressBar";
 import CartItem from "./CartItem";
-import { ProductData, ProductState } from "../types";
-import { currencyFormatter } from "../utils/currency";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { AppState } from "../store";
-import { useGetShopDataQuery } from "../store/shopApiSlice";
-import { hideCart } from "../store/cartSlice";
+import { ProductData, ProductState } from "../../types";
+import { formatUsd } from "../../utils/currency";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { AppState } from "../../store";
+import { useGetShopDataQuery } from "../../store/shopApiSlice";
+import { hideCart } from "../../store/cartSlice";
 import dynamic from "next/dynamic";
 
 type Props = {};
@@ -113,14 +113,14 @@ const Cart: React.FC<Props> = () => {
               <>
                 You're{" "}
                 <span className="font-bold">
-                  {currencyFormatter.format(FREE_SHIPPING_THRESHOLD - subtotal)}
+                  {formatUsd(FREE_SHIPPING_THRESHOLD - subtotal)}
                 </span>{" "}
                 away from free shipping!
               </>
             ) : (
               <>
                 Free Shipping on all orders over{" "}
-                {currencyFormatter.format(FREE_SHIPPING_THRESHOLD)}.
+                {formatUsd(FREE_SHIPPING_THRESHOLD)}.
               </>
             )}
           </p>
@@ -134,9 +134,7 @@ const Cart: React.FC<Props> = () => {
           </ul>
           <div className="flex justify-between pt-2.5 px-2.5">
             <span className="text-lg">Subtotal</span>{" "}
-            <span className="text-lg">
-              {currencyFormatter.format(subtotal)}
-            </span>
+            <span className="text-lg">{formatUsd(subtotal)}</span>
           </div>
         </section>
         <hr className="rounded h-1 border-gray bg-gray my-5" />
