@@ -1,8 +1,4 @@
-import {
-  // createAsyncThunk,
-  createSlice,
-  // PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 type CartState = { items: { [pid: string]: number }; isVisible: boolean };

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { getShopData } from "../store/shopApiSlice";
+import { getRunningQueryThunk, getShopData } from "../store/shopApiSlice";
 import ProductCard from "../components/ProductCard";
 import { wrapper } from "../store";
 import { ShopApiData } from "../types";
@@ -10,6 +10,7 @@ type Props = {
 };
 const IndexPage: React.FC<Props> = ({ data, error }) => {
   if (error) {
+    console.error(error);
     return <h1>Error: {JSON.stringify(error)}</h1>;
   }
 
@@ -38,7 +39,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       pid = "";
     }
 
-    const { data } = await store.dispatch(getShopData.initiate());
+    const { data, error } = await store.dispatch(getShopData.initiate());
 
     return {
       props: {

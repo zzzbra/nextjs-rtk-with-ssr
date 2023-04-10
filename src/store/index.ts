@@ -34,14 +34,15 @@ const makeStore = () => {
   });
 
   // listen for store changes and use saveToLocalStorage to
-  // save them to localStorage
+  // save them to localStorage, only on client side
   if (!isServer()) {
     configuredStore.subscribe(() => {
       saveToLocalStorage(configuredStore.getState());
     });
   }
 
-  setupListeners(configuredStore.dispatch);
+  // Leaving this on prevents the localStorage from updating
+  // setupListeners(configuredStore.dispatch);
 
   return configuredStore;
 };
@@ -49,9 +50,7 @@ const makeStore = () => {
 export const store = makeStore();
 
 export type AppState = ReturnType<typeof store.getState>;
-
 export type AppDispatch = typeof store.dispatch;
-
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppState,
@@ -60,5 +59,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >;
 
 export const wrapper = createWrapper(makeStore, { debug: true });
-
-setupListeners(store.dispatch);

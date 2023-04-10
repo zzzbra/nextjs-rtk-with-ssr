@@ -22,10 +22,6 @@ const ProductPage: React.FC<Props> = ({ data: product, error }) => {
     return <h1>Error: {JSON.stringify(error)}</h1>;
   }
 
-  if (product === undefined) {
-    return <h1>Error: 404</h1>;
-  }
-
   const [firstImage] = product?.images ?? [{}];
   return (
     <div className="content-container flex-col pt-8 md:grid md:grid-cols-12 gap-4 self-start">
