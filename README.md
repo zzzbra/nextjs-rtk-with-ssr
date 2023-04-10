@@ -1,4 +1,4 @@
-# Fast Growing Trees Shop Page susing Next.js, Redux Toolkit, TypeScript, & Tailwind
+# Fast Growing Trees Shop Page using Next.js, Redux Toolkit, TypeScript, & Tailwind
 
 ## Background & Overview
 
